@@ -1,0 +1,31 @@
+import pgzrun
+import random
+WIDTH=750
+HEIGHT=550
+lines=[]
+next=0
+munb=20
+sats=[]
+for i in range (munb):
+    sat=Actor("sat")
+    sat.x=random.randint(50,700)
+    sat.y=random.randint(50,500)
+    sats.append(sat)
+def draw():
+     screen.blit("space",(0,0))
+     n=1
+     for sat in sats:
+          sat.draw()
+          screen.draw.text(str(n),(sat.x,sat.y+20))
+          n+=1
+def update():
+     pass
+def on_mouse_down(pos):
+     global next,lines
+     if next<munb:
+          if sats[next].collidepoint(pos):
+               if next:
+                    lines.append((sats[next-1].pos,sats[next].pos))
+                    print (lines)
+               next+=1     
+pgzrun.go()
