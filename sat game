@@ -1,19 +1,28 @@
 import pgzrun
 import random
+import time
 WIDTH=750
 HEIGHT=550
-lines=[]
+lines=[] 
 next=0
 munb=20
 sats=[]
+start=time.time()
 for i in range (munb):
     sat=Actor("sat")
     sat.x=random.randint(50,700)
     sat.y=random.randint(50,500)
     sats.append(sat)
 def draw():
+     global total
      screen.blit("space",(0,0))
+     if next<munb:
+          total= time.time()- start
+          total=round(total,2)
+     screen.draw.text(str(total),(50,50))
      n=1
+     for line in lines:
+          screen.draw.line(line[0],line[1],"white")
      for sat in sats:
           sat.draw()
           screen.draw.text(str(n),(sat.x,sat.y+20))
