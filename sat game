@@ -1,40 +1,67 @@
 import pgzrun
-import random
-import time
-WIDTH=750
-HEIGHT=550
-lines=[] 
-next=0
-munb=20
-sats=[]
-start=time.time()
-for i in range (munb):
-    sat=Actor("sat")
-    sat.x=random.randint(50,700)
-    sat.y=random.randint(50,500)
-    sats.append(sat)
+WIDTH=800
+HEIGHT=600 
+aliendirection=1
+ship=Actor("ship")
+ship.x=400
+ship.y=500
+bullets=[]
+game= True
+score=0
+level=1
+lives=3
+aliens=[]
+def spawn_aliens():
+    global level
+    if level<=10:
+        for o in range(level):
+            for i in range(0,10):
+                alien= Actor("alien2")
+                alien.x=50+i*40
+                alien.y=50+o*70
+                aliens.append(alien)
 def draw():
-     global total
-     screen.blit("space",(0,0))
-     if next<munb:
-          total= time.time()- start
-          total=round(total,2)
-     screen.draw.text(str(total),(50,50))
-     n=1
-     for line in lines:
-          screen.draw.line(line[0],line[1],"white")
-     for sat in sats:
-          sat.draw()
-          screen.draw.text(str(n),(sat.x,sat.y+20))
-          n+=1
+    screen.blit("space",(0,0))
+    screen.draw.text(f'Score:{score}',(10,10))
+    screen.draw.text(f'level:{level}',(250,10))
+    if game== True:
+        ship.draw()
+        for alien in aliens:
+            alien.draw()
+        for bullet in bullets:
+            bullet.draw()
+    else: screen.draw.text(f"game over",(300,200))
+edge_hit=False
 def update():
-     pass
-def on_mouse_down(pos):
-     global next,lines
-     if next<munb:
-          if sats[next].collidepoint(pos):
-               if next:
-                    lines.append((sats[next-1].pos,sats[next].pos))
-                    print (lines)
-               next+=1     
+    global aliendirection, edge_hit, score,level,game 
+    if keyboard.left:
+        ship.x-=5   
+    elif keyboard.right:
+        ship.x+=5
+    if len(aliens)>0 and aliens[-1].x>=700 or aliens[0].x<50:
+         edge_hit=True
+         aliendirection*=-1
+    for alien in aliens:
+        alien.x+=aliendirection*10
+        if edge_hit == True:
+            alien.y+=2
+            if alien.y>HEIGHT -50:
+                game=False
+        for bullet in bullets:
+            if alien.colliderect(bullet):
+                aliens.remove(alien)
+                bullets.remove(bullet)
+                score=score+1
+        if len(aliens)==0:
+            level+=1 
+            spawn_aliens()        
+    for bullet in bullets:
+        bullet.y-=5
+def on_key_down(key):
+    if key == keys.SPACE:
+        bullet=Actor("bullet")
+        bullet.x=ship.x
+        bullet.y=ship.y
+        bullets.append(bullet)
+spawn_aliens()
 pgzrun.go()
