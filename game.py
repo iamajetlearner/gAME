@@ -5,21 +5,33 @@ HEIGHT=600
 ship=Actor("ship")
 ship.x=400
 ship.y=500
-astroid=Actor("astroid")
-astroid.x=random.randint(50,WIDTH-50)
-astroid.y=-50
+astroids=[]
+bullets=[]
+for i in range(5):
+    astroid=Actor("astroid")
+    astroid.x=random.randint(50,WIDTH-50)
+    astroid.y=-50
+    astroids.append(astroid)
 def draw():
     screen.blit("space",(0,0))
     ship.draw()
-    astroid.draw()
+    for astroid in astroids:
+        astroid.draw()
 def update():
     if keyboard.left:
         ship.x-=5   
     elif keyboard.right:
-        ship.x+=5
+        ship.x+=5 
 def fall():
-    astroid.x=random.randint(50,WIDTH-50)
-    astroid.y=-50
-    animate(astroid,duration=2,y=HEIGHT + 50,on_finished=fall)
+    for astroid in astroids:
+        astroid.x=random.randint(50,WIDTH-50)
+        astroid.y=-50
+        animate(astroid,duration=5,y=HEIGHT + 50,on_finished=fall)
+def on_key_down(key):
+    if key == keys.SPACE:
+        bullet=Actor("bullet")
+        bullet.x=ship.x
+        bullet.y=ship.y
+        bullets.append(bullet)
 fall()
 pgzrun.go()
