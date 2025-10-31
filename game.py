@@ -17,11 +17,20 @@ def draw():
     ship.draw()
     for astroid in astroids:
         astroid.draw()
+    for bullet in bullets:
+        bullet.draw()
 def update():
+    global astroids,bullets
     if keyboard.left:
         ship.x-=5   
     elif keyboard.right:
         ship.x+=5 
+    for bullet in bullets:
+        for astroid  in astroids:  
+            if astroid .colliderect(bullet):    
+                astroids.remove(astroid)
+                bullets .remove(bullet)
+        bullet.y-=5
 def fall():
     for astroid in astroids:
         astroid.x=random.randint(50,WIDTH-50)
