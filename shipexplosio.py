@@ -10,6 +10,8 @@ player.y=272
 enemies=[]
 game = True
 enemy_images=["greenship","blueship","greyship","redship"]
+health= 3
+timer=0
 def makeenemies():
     enemy=Actor("greenship")
     enemies.append(enemy)
@@ -26,11 +28,19 @@ def on_mouse_down(pos):
     if game == True:
         animate(player,pos=pos, duration=0.1,angle=player.angle_to(pos),tween="bounce_end")
 def draw():
+    global timer,health
+    screen.clear()
     screen.blit("bg",(0,0))
     player.draw()
     if game == True:
-        makeenemies()
+        timer +=1
+        if timer%20==0:
+            makeenemies()
+            timer=0
         for enemy in enemies:
             enemy.draw()
-            animate(enemy,pos=player.pos, duration=1.5,angle=enemy.angle_to(player.pos), tween = "accel_decel")
+            animate(enemy,pos=player.pos, duration=0.5,angle=enemy.angle_to(player.pos), tween = "accel_decel")
+            if enemy.colliderect(player):
+                enemies.remove(enemy)
+                health -=1
 pgzrun.go()
